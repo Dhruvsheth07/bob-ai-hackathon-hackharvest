@@ -72,6 +72,13 @@ class ConflictException(AppException):
         super().__init__(status_code=409, detail=detail)
 
 
+class NotFoundException(AppException):
+    """Resource not found."""
+
+    def __init__(self, detail: str = "Resource not found.") -> None:
+        super().__init__(status_code=404, detail=detail)
+
+
 # ── Handler Functions ─────────────────────────────────────────────
 
 async def app_exception_handler(

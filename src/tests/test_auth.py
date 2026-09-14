@@ -70,8 +70,8 @@ class TestLogin:
         response = client.post(
             "/api/v1/auth/login",
             json={
-                "email": "testuser@example.com",
-                "password": "SecurePass1",
+                "email": registered_user["email"],
+                "password": registered_user["_password"],
             },
         )
 
@@ -89,7 +89,7 @@ class TestLogin:
         response = client.post(
             "/api/v1/auth/login",
             json={
-                "email": "testuser@example.com",
+                "email": registered_user["email"],
                 "password": "WrongPassword1",
             },
         )
@@ -99,14 +99,14 @@ class TestLogin:
 class TestGetMe:
     """Tests for GET /api/v1/auth/me."""
 
-    def test_get_me_with_valid_token(self, client, auth_headers):
+    def test_get_me_with_valid_token(self, client, registered_user, auth_headers):
         """Valid token returns 200 with current user profile."""
         response = client.get("/api/v1/auth/me", headers=auth_headers)
 
         assert response.status_code == 200
         data = response.json()
 
-        assert data["email"] == "testuser@example.com"
+        assert data["email"] == registered_user["email"]
         assert data["name"] == "Test User"
         assert data["role"] == "VIEWER"
         assert "password_hash" not in data

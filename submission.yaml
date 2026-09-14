@@ -9,25 +9,30 @@
 # =============================================================================
 
 team:
-  name: ""                             # REQUIRED — e.g., "Orion Squad"
-  track: ""                            # REQUIRED — one of: AI | DevOps | Sustainability | Open
+  name: "hackharvest"                             # REQUIRED — e.g., "Orion Squad"
+  track: "Sustainability"                            # REQUIRED — one of: AI | DevOps | Sustainability | Open
   lead:
-    name: ""                           # REQUIRED — e.g., "Alice Chen"
-    email: ""                          # REQUIRED — e.g., "alice.chen@ibm.com"
+    name: "Dhruv sheth"                           # REQUIRED — e.g., "Alice Chen"
+    email: "drsheth10@gmail.com"                          # REQUIRED — e.g., "alice.chen@ibm.com"
   members:
-    - name: ""                         # REQUIRED — Team member 1
-      email: ""
-    - name: ""                         # Add more members by copying the two lines above
-      email: ""
-    - name: ""
-      email: ""
+    - name: "Patel Ankit Nileshbhai"                         # REQUIRED — Team member 1
+      email: "ankitpatel45820@gmail.com"
+    - name: "Patel Yug Shashikant"                         # Add more members by copying the two lines above
+      email: "yugpatel9093@gmail.com"
+    - name: "Aryant solanki"
+      email: "solankiaryant@gmail.com"
 
 submission:
-  title: ""                            # REQUIRED — Project display name, e.g., "SmartOps Dashboard"
+  title: "PortFlow AI"                            # REQUIRED — Project display name, e.g., "SmartOps Dashboard"
 
   problem_statement: >                 # REQUIRED — 1-3 sentences. What problem? Who has it?
-    Replace this text with a concise description of the real-world problem
-    your project addresses and who experiences it.
+     Port operators nowadays use spreadsheers to manage all the port operations 
+     which give unnecessary manual overhead such as 
+     struggle to predict congestion and efficiently allocate
+     berths, cranes, and yard capacity because vessel arrivals, resource
+     availability, and service times are constantly changing.
+     this process is very human error prone and inefficient since , once the issue is occured 
+     then the staff realises it .So on-spot remediation is tough for them .
 
   solution_summary: >                  # REQUIRED — 1-3 sentences. What did you build?
     Replace this text with a clear description of your solution

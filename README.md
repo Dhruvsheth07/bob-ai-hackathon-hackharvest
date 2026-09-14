@@ -8,8 +8,8 @@
 
 | Field | Value |
 |---|---|
-| **Team Name** | [Your Team Name] |
-| **Track** | [AI / DevOps / Sustainability / Open] |
+| **Team Name** | hackharvest |
+| **Track** | Sustainability |
 | **Team Lead** | [Name] — [email@ibm.com] |
 | **Members** | [Name 1], [Name 2], [Name 3] |
 
