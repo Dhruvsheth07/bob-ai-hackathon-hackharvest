@@ -26,3 +26,5 @@ from app.models.congestion_prediction import CongestionPrediction  # noqa: E402,
 from app.models.optimization_run import OptimizationRun  # noqa: E402, F401
 from app.models.berth_assignment import BerthAssignment  # noqa: E402, F401
 from app.models.crane_assignment import CraneAssignment  # noqa: E402, F401
+from app.models.recommendation import Recommendation  # noqa: E402, F401
+from app.models.audit_log import AuditLog  # noqa: E402, F401

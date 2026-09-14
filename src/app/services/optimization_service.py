@@ -127,6 +127,15 @@ def run_optimization(db: Session, request: OptimizationRequest, user_id: int) ->
         
         if berth_assigns or crane_assigns:
             optimization_repository.save_assignments(db, berth_assigns, crane_assigns)
+
+        # 5. Auto-generate recommendations from the completed run
+        if solver_res.status == "COMPLETED":
+            try:
+                from app.services import recommendation_service as _rec_svc
+                _rec_svc.generate_recommendations(db, request.port_id, run.id)
+            except Exception:
+                # Recommendation generation failure must not roll back the optimization result
+                pass
             
         return _build_result(db, run)
             

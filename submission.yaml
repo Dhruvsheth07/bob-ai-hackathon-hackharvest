@@ -35,8 +35,12 @@ submission:
      then the staff realises it .So on-spot remediation is tough for them .
 
   solution_summary: >                  # REQUIRED — 1-3 sentences. What did you build?
-    Replace this text with a clear description of your solution
-    and how it addresses the problem above.
+    PortFlow AI is decision-support and managing platform that forecasts port 
+    congestion using vessel schedules and operational capacity data, then uses constraint
+    optimization to generate feasible berth and crane assignments. It provides
+    congestion alerts in prior, explainable operational recommendations, and a
+    72-hour planning view to help supervisors make faster, data-driven
+    scheduling decisions.
 
   key_features:                        # REQUIRED — List 3 to 5 specific features you implemented
     - ""                               # e.g., "Real-time pipeline anomaly detection using watsonx.ai"
@@ -46,15 +50,14 @@ submission:
     - ""                               # optional 5th
 
   tech_stack:
-    languages: []                      # REQUIRED — e.g., ["Python", "TypeScript"]
-    frameworks: []                     # e.g., ["FastAPI", "React"]
-    ibm_technologies: []               # e.g., ["watsonx.ai", "IBM Bob", "IBM Cloud Functions"]
-    databases: []                      # e.g., ["PostgreSQL", "Redis"]
-    other: []                          # e.g., ["Docker", "GitHub Actions", "Slack API"]
+    languages: ["Python", "Javascript", "SQL"]                      # REQUIRED — e.g., ["Python", "TypeScript"]
+    frameworks: ["FastAPI","React.js","Tailwind CSS","SQLAlchemy"]                     # e.g., ["FastAPI", "React"]
+    ibm_technologies: ["IBM Bob","IBM watsonx.ai"]               # e.g., ["watsonx.ai", "IBM Bob", "IBM Cloud Functions"]
+    databases: ["PostgreSQL"]                      # e.g., ["PostgreSQL", "Redis"]
+    other: [Google OR-Tools CP-SAT, "sklearn","pandas","numpy"]                          # e.g., ["Docker", "GitHub Actions", "Slack API"]
 
   what_we_are_most_proud_of: >         # Optional but recommended — guides judges to your best work
-    Replace with what aspect of the submission you consider strongest
-    and want judges to pay special attention to.
+    
 
   known_limitations: >                 # Optional but recommended — be honest about gaps
     Replace with any known limitations, incomplete features,
