@@ -34,7 +34,7 @@ const handleResponse = async (response) => {
     let errorMessage = 'API Request Failed';
     try {
       const errorData = await response.json();
-      errorMessage = errorData.detail || errorMessage;
+      errorMessage = errorData.error || errorData.detail || errorMessage;
     } catch (e) {
       // Not JSON
     }

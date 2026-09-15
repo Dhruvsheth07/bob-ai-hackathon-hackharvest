@@ -14,6 +14,15 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 def seed():
     db = SessionLocal()
     try:
+        from app.models.role import Role
+        # Check if ADMIN role exists
+        admin_role = db.query(Role).filter(Role.name == "ADMIN").first()
+        if not admin_role:
+            print("Creating ADMIN role...")
+            admin_role = Role(name="ADMIN")
+            db.add(admin_role)
+            db.commit()
+            
         # Check if admin already exists
         admin = db.query(User).filter(User.email == "admin@example.com").first()
         if not admin:
