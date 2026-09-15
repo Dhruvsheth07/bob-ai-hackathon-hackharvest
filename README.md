@@ -10,24 +10,22 @@
 |---|---|
 | **Team Name** | hackharvest |
 | **Track** | Sustainability |
-| **Team Lead** | [Name] — [email@ibm.com] |
-| **Members** | [Name 1], [Name 2], [Name 3] |
+| **Team Lead** | Dhruv Sheth — 24dce133@charusat.edu.in |
+| **Members** | Patel Ankit , Patel Yug , Solanki Aryant |
 
 ---
 
 ## 🎯 Problem Statement
 
-> In 2–3 sentences: What problem does your project solve? Who experiences this problem?
+>  Port operators nowadays use spreadsheers to manage all the port operations which give unnecessary manual overhead such as struggle to predict congestion and efficiently allocate berths, cranes, and yard capacity because vessel arrivals, resource availability, and service times are constantly changing.This process is very human error prone and inefficient since , once the issue is occured then the staff realises it .So on-spot remediation is tough for them .
 
-[Describe the real-world problem your project addresses. Be specific about who the user is and what pain point they face.]
+
 
 ---
 
 ## 💡 Solution
 
-> In 2–3 sentences: What did you build? How does it solve the problem above?
-
-[Describe your solution clearly. Explain the core mechanism — what makes it work.]
+> PortFlow AI is decision-support and managing platform that forecasts port congestion using vessel schedules and operational capacity data, then uses constraint optimization to generate feasible berth and crane assignments. It provides congestion alerts in prior, explainable operational recommendations, and a 72-hour planning view to help supervisors make faster data-driven scheduling decisions.
 
 ---
 
@@ -45,11 +43,11 @@
 
 | Category | Technologies |
 |---|---|
-| **Languages** | [e.g., Python, TypeScript] |
-| **Frameworks** | [e.g., FastAPI, React] |
-| **IBM Technologies** | [e.g., watsonx.ai, IBM Bob, IBM Cloud] |
-| **Databases** | [e.g., PostgreSQL, Redis] |
-| **Other** | [e.g., Docker, GitHub Actions] |
+| **Languages** | Python, Javascript, SQL  |
+| **Frameworks** | FastAPI, React.js, Tailwind CSS,  SQLAlchemy |
+| **IBM Technologies** | IBM Bob |
+| **Databases** | PostgreSQL |
+| **Other** | Google OR-Tools CP-SAT, sklearn, pandas,numpy
 
 ---
 
@@ -81,14 +79,22 @@ git clone https://github.com/[your-repo].git
 cd [your-repo]
 
 # 2. Install dependencies
-[your install command here]
+cd src
+python -m venv .venv
+pip install -r requirements.txt
+npm i
+
 
 # 3. Configure environment
 cp .env.example .env
 # Edit .env with your values
 
 # 4. Run the project
-[your run command here]
+frontend
+npm run dev
+
+backend
+uvicorn app.main:app --reload --port 8000 
 ```
 
 ---
@@ -106,16 +112,17 @@ cp .env.example .env
 
 ## ⚠️ Known Limitations
 
-> Be honest — judges appreciate transparency over overclaiming.
-
-- [Limitation 1: e.g., "Authentication is mocked — not production-ready"]
-- [Limitation 2: e.g., "Only tested on Chrome"]
-- [Limitation 3: e.g., "Feature X is scaffolded but not fully implemented"]
+>The current MVP uses synthetic or simulated operational data and does not yet integrate live AIS vessel feeds, real-time port systems, or weather data. Congestion forecasts are intended for operational decision support, not as a replacement for human supervisor judgment. Advanced multi-port routing, full yard optimization, and real-time streaming are planned for future versions.
 
 ---
 
 ## 🏅 What We're Most Proud Of
 
-[Tell the judges what part of your submission is strongest and worth paying close attention to.]
+Our strongest contribution is the integration of predictive analytics
+     with constraint-based optimization. Instead of only displaying congestion
+     predictions, the platform converts those predictions into actionable
+     berth and crane schedules and a 72-hour operations plan. This creates a
+     practical bridge between AI-based forecasting and real-world port
+     decision-making.
 
 ---

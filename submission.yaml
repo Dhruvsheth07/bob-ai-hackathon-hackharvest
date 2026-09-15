@@ -13,14 +13,14 @@ team:
   track: "Sustainability"                            # REQUIRED — one of: AI | DevOps | Sustainability | Open
   lead:
     name: "Dhruv sheth"                           # REQUIRED — e.g., "Alice Chen"
-    email: "drsheth10@gmail.com"                          # REQUIRED — e.g., "alice.chen@ibm.com"
+    email: "24dce133@charusat.edu.in"                          # REQUIRED — e.g., "alice.chen@ibm.com"
   members:
     - name: "Patel Ankit Nileshbhai"                         # REQUIRED — Team member 1
-      email: "ankitpatel45820@gmail.com"
+      email: "24dce087@charusat.edu.in"
     - name: "Patel Yug Shashikant"                         # Add more members by copying the two lines above
-      email: "yugpatel9093@gmail.com"
+      email: "24dce106@charusat.edu.in"
     - name: "Aryant solanki"
-      email: "solankiaryant@gmail.com"
+      email: "24dce136@charusat.edu.in"
 
 submission:
   title: "PortFlow AI"                            # REQUIRED — Project display name, e.g., "SmartOps Dashboard"
@@ -57,11 +57,20 @@ submission:
     other: [Google OR-Tools CP-SAT, "sklearn","pandas","numpy"]                          # e.g., ["Docker", "GitHub Actions", "Slack API"]
 
   what_we_are_most_proud_of: >         # Optional but recommended — guides judges to your best work
-    
+     Our strongest contribution is the integration of predictive analytics
+     with constraint-based optimization. Instead of only displaying congestion
+     predictions, the platform converts those predictions into actionable
+     berth and crane schedules and a 72-hour operations plan. This creates a
+     practical bridge between AI-based forecasting and real-world port
+     decision-making.
 
   known_limitations: >                 # Optional but recommended — be honest about gaps
-    Replace with any known limitations, incomplete features,
-    or shortcuts taken due to time constraints.
+      The current MVP uses synthetic or simulated operational data and does not
+      yet integrate live AIS vessel feeds, real-time port systems, or weather
+      data. Congestion forecasts are intended for operational decision support,
+      not as a replacement for human supervisor judgment. Advanced multi-port
+      routing, full yard optimization, and real-time streaming are planned for
+      future versions.
 
 # =============================================================================
 # ARTIFACT LOCATIONS
