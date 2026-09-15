@@ -28,3 +28,6 @@ from app.models.berth_assignment import BerthAssignment  # noqa: E402, F401
 from app.models.crane_assignment import CraneAssignment  # noqa: E402, F401
 from app.models.recommendation import Recommendation  # noqa: E402, F401
 from app.models.audit_log import AuditLog  # noqa: E402, F401
+from app.models.operation_plan import OperationPlan  # noqa: E402, F401
+from app.models.operation_plan_item import OperationPlanItem  # noqa: E402, F401
+from app.models.simulation import Simulation  # noqa: E402, F401

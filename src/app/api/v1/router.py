@@ -24,6 +24,8 @@ from app.api.v1.schedules import router as schedules_router
 from app.api.v1.predictions import router as predictions_router
 from app.api.v1.optimization import router as optimization_router
 from app.api.v1.recommendations import router as recommendations_router
+from app.api.v1.operations_plans import router as operations_plans_router
+from app.api.v1.simulations import router as simulations_router
 
 router.include_router(auth_router, prefix="/auth", tags=["Authentication"])
 router.include_router(vessels_router, prefix="/vessels", tags=["Vessels"])
@@ -31,6 +33,8 @@ router.include_router(schedules_router, prefix="/schedules", tags=["Vessel Sched
 router.include_router(predictions_router, prefix="/predictions", tags=["Congestion Predictions"])
 router.include_router(optimization_router, prefix="/optimization", tags=["Berth & Crane Optimization"])
 router.include_router(recommendations_router, prefix="/recommendations", tags=["Recommendations"])
+router.include_router(operations_plans_router, prefix="/operations-plans", tags=["Operations Plans"])
+router.include_router(simulations_router, prefix="/simulations", tags=["What-If Simulations"])
 
 
 @router.get(

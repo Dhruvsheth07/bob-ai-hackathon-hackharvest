@@ -2,9 +2,7 @@
 Vessel repository — data access layer.
 """
 
-from typing import Any
-
-from sqlalchemy import or_
+from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 
 from app.models.vessel import Vessel
@@ -67,5 +65,3 @@ def delete(db: Session, vessel: Vessel) -> None:
     db.delete(vessel)
     db.commit()
 
-# Need func for get_by_imo
-from sqlalchemy import func
