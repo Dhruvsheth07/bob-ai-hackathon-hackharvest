@@ -94,10 +94,23 @@ class ScheduleUpdate(BaseModel):
         return v.upper()
 
 
-class ScheduleResponse(ScheduleBase):
-    """Schema for Vessel Schedule response."""
+class ScheduleResponse(BaseModel):
+    """
+    Schema for Vessel Schedule response.
+
+    Does NOT inherit ScheduleBase validators so that existing DB rows
+    are returned as-is without risking validation failures on read.
+    """
 
     id: int
+    vessel_id: int
+    port_id: int
+    eta: datetime
+    predicted_eta: datetime | None = None
+    etd: datetime | None = None
+    containers_teu: int | None = None
+    priority: str | None = None
+    status: str | None = None
     vessel_name: str | None = None
     port_name: str | None = None
     created_at: datetime | None = None

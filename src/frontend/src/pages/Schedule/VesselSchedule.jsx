@@ -1,44 +1,54 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import {
-  Calendar as CalendarIcon, Filter, ChevronLeft, ChevronRight,
-  Clock, Ship, Plus, X, RefreshCw,
+  Calendar as CalendarIcon, Clock, Ship, Plus, X, RefreshCw, Pencil, Trash2,
 } from 'lucide-react';
 import { scheduleApi } from '../../api/scheduleApi';
 import { vesselApi } from '../../api/vesselApi';
-import { Card, CardContent, CardHeader } from '../../components/common/Card';
+import { Card, CardContent } from '../../components/common/Card';
 import Button from '../../components/common/Button';
 import { Badge } from '../../components/common/Badge';
 import { Input } from '../../components/common/Input';
 
-// ── Status colour map ─────────────────────────────────────────────────────────
+// ── Constants ─────────────────────────────────────────────────────────────────
 const STATUS_VARIANT = {
-  SCHEDULED: 'outline',
-  ARRIVED: 'default',
-  BERTHED: 'success',
+  SCHEDULED:   'outline',
+  ARRIVED:     'default',
+  BERTHED:     'success',
   IN_PROGRESS: 'warning',
-  COMPLETED: 'secondary',
-  CANCELLED: 'destructive',
+  COMPLETED:   'secondary',
+  CANCELLED:   'destructive',
 };
 
 const PRIORITY_VARIANT = {
-  NORMAL: 'outline',
-  HIGH: 'warning',
+  NORMAL:   'outline',
+  HIGH:     'warning',
   CRITICAL: 'destructive',
 };
 
-// ── Add Schedule Modal ────────────────────────────────────────────────────────
-function AddScheduleModal({ vessels, onClose, onSuccess }) {
+// Format a datetime string into "YYYY-MM-DDThh:mm" for <input type="datetime-local">
+function toLocalInput(isoStr) {
+  if (!isoStr) return '';
+  const d = new Date(isoStr);
+  // pad to local datetime-local format
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+// ── Shared Modal Form ─────────────────────────────────────────────────────────
+function ScheduleModal({ vessels, initial, onClose, onSuccess }) {
+  const isEditing = !!initial;
+
   const [form, setForm] = useState({
-    vessel_id: '',
-    port_id: '1',          // default port — adjust as needed
-    eta: '',
-    etd: '',
-    containers_teu: '',
-    priority: 'NORMAL',
-    status: 'SCHEDULED',
+    vessel_id:      initial?.vessel_id  ?? '',
+    port_id:        initial?.port_id    ?? 1,
+    eta:            toLocalInput(initial?.eta),
+    etd:            toLocalInput(initial?.etd),
+    containers_teu: initial?.containers_teu ?? '',
+    priority:       initial?.priority   ?? 'NORMAL',
+    status:         initial?.status     ?? 'SCHEDULED',
   });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError]     = useState('');
 
   const handleChange = (e) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -49,41 +59,56 @@ function AddScheduleModal({ vessels, onClose, onSuccess }) {
     setLoading(true);
     try {
       const payload = {
-        vessel_id: parseInt(form.vessel_id, 10),
-        port_id: parseInt(form.port_id, 10),
-        eta: new Date(form.eta).toISOString(),
-        etd: form.etd ? new Date(form.etd).toISOString() : undefined,
+        vessel_id:      parseInt(form.vessel_id, 10),
+        port_id:        parseInt(form.port_id, 10),
+        eta:            new Date(form.eta).toISOString(),
+        etd:            form.etd ? new Date(form.etd).toISOString() : undefined,
         containers_teu: form.containers_teu ? parseInt(form.containers_teu, 10) : 0,
-        priority: form.priority,
-        status: form.status,
+        priority:       form.priority,
+        status:         form.status,
       };
-      await scheduleApi.createSchedule(payload);
+
+      if (isEditing) {
+        await scheduleApi.updateSchedule(initial.id, payload);
+      } else {
+        await scheduleApi.createSchedule(payload);
+      }
       onSuccess();
     } catch (err) {
-      setError(err.message || 'Failed to create schedule entry');
+      setError(err.message || (isEditing ? 'Failed to update schedule' : 'Failed to create schedule'));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-surface border border-outline-variant rounded-xl shadow-2xl w-full max-w-lg mx-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+      <div className="bg-surface border border-outline-variant rounded-xl shadow-2xl w-full max-w-lg mx-4 animate-in fade-in zoom-in-95">
+        {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-outline-variant">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
-              <CalendarIcon className="w-5 h-5 text-primary" />
+              {isEditing
+                ? <Pencil className="w-5 h-5 text-primary" />
+                : <CalendarIcon className="w-5 h-5 text-primary" />}
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-on-surface">Schedule Vessel Arrival</h2>
-              <p className="text-xs text-on-surface-variant">Add a new vessel schedule entry</p>
+              <h2 className="text-lg font-semibold text-on-surface">
+                {isEditing ? 'Edit Schedule' : 'Schedule Vessel Arrival'}
+              </h2>
+              <p className="text-xs text-on-surface-variant">
+                {isEditing
+                  ? `Editing: ${initial.vessel_name || `Vessel #${initial.vessel_id}`}`
+                  : 'Add a new vessel schedule entry'}
+              </p>
             </div>
           </div>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-surface-container text-on-surface-variant">
+          <button onClick={onClose} className="p-2 rounded-lg hover:bg-surface-container text-on-surface-variant transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
 
+        {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {error && (
             <div className="bg-error/10 border border-error/30 text-error text-sm px-4 py-2 rounded-lg">
@@ -92,6 +117,7 @@ function AddScheduleModal({ vessels, onClose, onSuccess }) {
           )}
 
           <div className="grid grid-cols-2 gap-4">
+            {/* Vessel */}
             <div className="col-span-2">
               <label className="text-xs font-medium text-on-surface-variant uppercase tracking-wide mb-1.5 block">
                 Vessel <span className="text-error">*</span>
@@ -106,27 +132,21 @@ function AddScheduleModal({ vessels, onClose, onSuccess }) {
                 <option value="">Select a vessel...</option>
                 {vessels.map((v) => (
                   <option key={v.id} value={v.id}>
-                    {v.name} {v.imo_number ? `(${v.imo_number})` : ''}
+                    {v.name}{v.imo_number ? ` (${v.imo_number})` : ''}
                   </option>
                 ))}
               </select>
             </div>
 
+            {/* Port ID */}
             <div className="col-span-2">
               <label className="text-xs font-medium text-on-surface-variant uppercase tracking-wide mb-1.5 block">
                 Port ID <span className="text-error">*</span>
               </label>
-              <Input
-                name="port_id"
-                type="number"
-                value={form.port_id}
-                onChange={handleChange}
-                placeholder="Port ID"
-                required
-                min="1"
-              />
+              <Input name="port_id" type="number" value={form.port_id} onChange={handleChange} required min="1" />
             </div>
 
+            {/* ETA */}
             <div>
               <label className="text-xs font-medium text-on-surface-variant uppercase tracking-wide mb-1.5 block">
                 ETA <span className="text-error">*</span>
@@ -134,31 +154,23 @@ function AddScheduleModal({ vessels, onClose, onSuccess }) {
               <Input name="eta" type="datetime-local" value={form.eta} onChange={handleChange} required />
             </div>
 
+            {/* ETD */}
             <div>
-              <label className="text-xs font-medium text-on-surface-variant uppercase tracking-wide mb-1.5 block">
-                ETD
-              </label>
+              <label className="text-xs font-medium text-on-surface-variant uppercase tracking-wide mb-1.5 block">ETD</label>
               <Input name="etd" type="datetime-local" value={form.etd} onChange={handleChange} />
             </div>
 
+            {/* Containers */}
             <div>
               <label className="text-xs font-medium text-on-surface-variant uppercase tracking-wide mb-1.5 block">
                 Containers (TEU)
               </label>
-              <Input
-                name="containers_teu"
-                type="number"
-                value={form.containers_teu}
-                onChange={handleChange}
-                placeholder="e.g. 2000"
-                min="0"
-              />
+              <Input name="containers_teu" type="number" value={form.containers_teu} onChange={handleChange} placeholder="e.g. 2000" min="0" />
             </div>
 
+            {/* Priority */}
             <div>
-              <label className="text-xs font-medium text-on-surface-variant uppercase tracking-wide mb-1.5 block">
-                Priority
-              </label>
+              <label className="text-xs font-medium text-on-surface-variant uppercase tracking-wide mb-1.5 block">Priority</label>
               <select
                 name="priority"
                 value={form.priority}
@@ -170,14 +182,34 @@ function AddScheduleModal({ vessels, onClose, onSuccess }) {
                 <option value="CRITICAL">Critical</option>
               </select>
             </div>
+
+            {/* Status — only shown when editing */}
+            {isEditing && (
+              <div className="col-span-2">
+                <label className="text-xs font-medium text-on-surface-variant uppercase tracking-wide mb-1.5 block">Status</label>
+                <select
+                  name="status"
+                  value={form.status}
+                  onChange={handleChange}
+                  className="w-full h-9 px-3 py-1 text-sm rounded-md border border-outline-variant bg-surface text-on-surface focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="SCHEDULED">Scheduled</option>
+                  <option value="ARRIVED">Arrived</option>
+                  <option value="BERTHED">Berthed</option>
+                  <option value="IN_PROGRESS">In Progress</option>
+                  <option value="COMPLETED">Completed</option>
+                  <option value="CANCELLED">Cancelled</option>
+                </select>
+              </div>
+            )}
           </div>
 
           <div className="flex gap-3 pt-2">
-            <Button type="button" variant="outline" className="flex-1" onClick={onClose}>
-              Cancel
-            </Button>
+            <Button type="button" variant="outline" className="flex-1" onClick={onClose}>Cancel</Button>
             <Button type="submit" className="flex-1" disabled={loading}>
-              {loading ? 'Scheduling...' : 'Add Schedule'}
+              {loading
+                ? (isEditing ? 'Saving...' : 'Scheduling...')
+                : (isEditing ? 'Save Changes' : 'Add Schedule')}
             </Button>
           </div>
         </form>
@@ -186,10 +218,68 @@ function AddScheduleModal({ vessels, onClose, onSuccess }) {
   );
 }
 
-// ── Schedule Row Card ─────────────────────────────────────────────────────────
-function ScheduleCard({ entry }) {
+// ── Delete Confirm Modal ──────────────────────────────────────────────────────
+function DeleteConfirmModal({ entry, onClose, onSuccess }) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleDelete = async () => {
+    setLoading(true);
+    try {
+      await scheduleApi.deleteSchedule(entry.id);
+      onSuccess();
+    } catch (err) {
+      setError(err.message || 'Failed to delete schedule');
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 border border-outline-variant rounded-lg bg-surface hover:bg-surface-container-low transition-colors">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+      <div className="bg-surface border border-outline-variant rounded-xl shadow-2xl w-full max-w-sm mx-4">
+        <div className="p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-full bg-error/10 flex items-center justify-center shrink-0">
+              <Trash2 className="w-5 h-5 text-error" />
+            </div>
+            <div>
+              <h2 className="text-base font-semibold text-on-surface">Delete Schedule</h2>
+              <p className="text-sm text-on-surface-variant">This action cannot be undone.</p>
+            </div>
+          </div>
+
+          <p className="text-sm text-on-surface mb-4">
+            Are you sure you want to delete the schedule for{' '}
+            <span className="font-semibold">{entry.vessel_name || `Vessel #${entry.vessel_id}`}</span>?
+          </p>
+
+          {error && (
+            <div className="bg-error/10 border border-error/30 text-error text-sm px-3 py-2 rounded-lg mb-4">
+              {error}
+            </div>
+          )}
+
+          <div className="flex gap-3">
+            <Button variant="outline" className="flex-1" onClick={onClose}>Cancel</Button>
+            <Button
+              className="flex-1 bg-error text-on-error hover:bg-error/80"
+              onClick={handleDelete}
+              disabled={loading}
+            >
+              {loading ? 'Deleting...' : 'Delete'}
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Schedule Row Card ─────────────────────────────────────────────────────────
+function ScheduleCard({ entry, onEdit, onDelete }) {
+  return (
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 border border-outline-variant rounded-lg bg-surface hover:bg-surface-container-low transition-colors group">
+      {/* Left — vessel info */}
       <div className="flex items-center gap-3 min-w-0">
         <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
           <Ship className="w-5 h-5 text-primary" />
@@ -204,26 +294,43 @@ function ScheduleCard({ entry }) {
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs">
-        <div className="flex items-center gap-1 text-on-surface-variant">
-          <Clock className="w-3.5 h-3.5" />
-          <span>
-            ETA: <span className="font-mono text-on-surface">{new Date(entry.eta).toLocaleString()}</span>
-          </span>
+      {/* Middle — times & badges */}
+      <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs min-w-0">
+        <div className="flex items-center gap-1 text-on-surface-variant whitespace-nowrap">
+          <Clock className="w-3.5 h-3.5 shrink-0" />
+          ETA: <span className="font-mono text-on-surface ml-0.5">{new Date(entry.eta).toLocaleString()}</span>
         </div>
         {entry.etd && (
-          <div className="flex items-center gap-1 text-on-surface-variant">
-            <Clock className="w-3.5 h-3.5" />
-            <span>
-              ETD: <span className="font-mono text-on-surface">{new Date(entry.etd).toLocaleString()}</span>
-            </span>
+          <div className="flex items-center gap-1 text-on-surface-variant whitespace-nowrap">
+            <Clock className="w-3.5 h-3.5 shrink-0" />
+            ETD: <span className="font-mono text-on-surface ml-0.5">{new Date(entry.etd).toLocaleString()}</span>
           </div>
         )}
         {entry.containers_teu != null && (
-          <span className="text-on-surface-variant">{entry.containers_teu.toLocaleString()} TEU</span>
+          <span className="text-on-surface-variant whitespace-nowrap">
+            {entry.containers_teu.toLocaleString()} TEU
+          </span>
         )}
         <Badge variant={PRIORITY_VARIANT[entry.priority] ?? 'outline'}>{entry.priority}</Badge>
         <Badge variant={STATUS_VARIANT[entry.status] ?? 'outline'}>{entry.status}</Badge>
+      </div>
+
+      {/* Right — action buttons (visible on hover) */}
+      <div className="flex items-center gap-1 shrink-0 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+        <button
+          onClick={() => onEdit(entry)}
+          className="p-2 rounded-lg text-on-surface-variant hover:bg-primary/10 hover:text-primary transition-colors"
+          title="Edit schedule"
+        >
+          <Pencil className="w-4 h-4" />
+        </button>
+        <button
+          onClick={() => onDelete(entry)}
+          className="p-2 rounded-lg text-on-surface-variant hover:bg-error/10 hover:text-error transition-colors"
+          title="Delete schedule"
+        >
+          <Trash2 className="w-4 h-4" />
+        </button>
       </div>
     </div>
   );
@@ -231,13 +338,17 @@ function ScheduleCard({ entry }) {
 
 // ── Main Component ────────────────────────────────────────────────────────────
 export function VesselSchedule() {
-  const [items, setItems] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [vessels, setVessels] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [showAddModal, setShowAddModal] = useState(false);
+  const [items, setItems]             = useState([]);
+  const [total, setTotal]             = useState(0);
+  const [vessels, setVessels]         = useState([]);
+  const [isLoading, setIsLoading]     = useState(true);
+  const [error, setError]             = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
+
+  // Modal state
+  const [addOpen, setAddOpen]         = useState(false);
+  const [editEntry, setEditEntry]     = useState(null);   // schedule being edited
+  const [deleteEntry, setDeleteEntry] = useState(null);   // schedule being deleted
 
   const loadData = useCallback(async () => {
     setIsLoading(true);
@@ -245,9 +356,9 @@ export function VesselSchedule() {
     try {
       const [schedRes, vesselRes] = await Promise.all([
         scheduleApi.getSchedules({ page: 1, page_size: 100, sort_by: 'eta' }),
-        vesselApi.getVessels({ page: 1, page_size: 200 }),
+        vesselApi.getVessels({ page: 1, page_size: 100 }),
       ]);
-      const schedules = Array.isArray(schedRes) ? schedRes : schedRes?.items ?? [];
+      const schedules  = Array.isArray(schedRes)  ? schedRes  : schedRes?.items  ?? [];
       const vesselList = Array.isArray(vesselRes) ? vesselRes : vesselRes?.items ?? [];
       setItems(schedules);
       setTotal(schedRes?.total ?? schedules.length);
@@ -260,24 +371,46 @@ export function VesselSchedule() {
     }
   }, []);
 
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
+  useEffect(() => { loadData(); }, [loadData]);
 
   const statuses = ['ALL', 'SCHEDULED', 'ARRIVED', 'BERTHED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'];
   const filtered = statusFilter === 'ALL' ? items : items.filter((s) => s.status === statusFilter);
 
+  const handleModalSuccess = () => {
+    setAddOpen(false);
+    setEditEntry(null);
+    setDeleteEntry(null);
+    loadData();
+  };
+
   return (
     <div className="space-y-6">
-      {showAddModal && (
-        <AddScheduleModal
+      {/* ── Modals ── */}
+      {addOpen && (
+        <ScheduleModal
           vessels={vessels}
-          onClose={() => setShowAddModal(false)}
-          onSuccess={() => { setShowAddModal(false); loadData(); }}
+          initial={null}
+          onClose={() => setAddOpen(false)}
+          onSuccess={handleModalSuccess}
+        />
+      )}
+      {editEntry && (
+        <ScheduleModal
+          vessels={vessels}
+          initial={editEntry}
+          onClose={() => setEditEntry(null)}
+          onSuccess={handleModalSuccess}
+        />
+      )}
+      {deleteEntry && (
+        <DeleteConfirmModal
+          entry={deleteEntry}
+          onClose={() => setDeleteEntry(null)}
+          onSuccess={handleModalSuccess}
         />
       )}
 
-      {/* Page Header */}
+      {/* ── Page Header ── */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-on-surface">Vessel Schedule</h1>
@@ -289,14 +422,14 @@ export function VesselSchedule() {
           <Button variant="outline" size="icon" onClick={loadData} title="Refresh">
             <RefreshCw className="w-4 h-4" />
           </Button>
-          <Button onClick={() => setShowAddModal(true)}>
+          <Button onClick={() => setAddOpen(true)}>
             <Plus className="w-4 h-4 mr-2" />
             Schedule Vessel
           </Button>
         </div>
       </div>
 
-      {/* Error */}
+      {/* ── Error Banner ── */}
       {error && (
         <div className="bg-error/10 border border-error/30 text-error text-sm px-4 py-3 rounded-lg flex items-center gap-2">
           <X className="w-4 h-4 shrink-0" />
@@ -305,7 +438,7 @@ export function VesselSchedule() {
         </div>
       )}
 
-      {/* Status Filter Tabs */}
+      {/* ── Status Filter Tabs ── */}
       <div className="flex flex-wrap gap-2">
         {statuses.map((s) => (
           <button
@@ -322,7 +455,7 @@ export function VesselSchedule() {
         ))}
       </div>
 
-      {/* Schedule List */}
+      {/* ── Schedule List ── */}
       <Card>
         <CardContent className="pt-4">
           {isLoading ? (
@@ -334,7 +467,7 @@ export function VesselSchedule() {
             <div className="h-48 flex flex-col items-center justify-center gap-3 text-center">
               <CalendarIcon className="w-10 h-10 text-on-surface-variant/40" />
               <p className="text-on-surface-variant text-sm">No schedule entries found.</p>
-              <Button onClick={() => setShowAddModal(true)}>
+              <Button onClick={() => setAddOpen(true)}>
                 <Plus className="w-4 h-4 mr-2" />
                 Schedule First Vessel
               </Button>
@@ -342,7 +475,12 @@ export function VesselSchedule() {
           ) : (
             <div className="space-y-3">
               {filtered.map((entry) => (
-                <ScheduleCard key={entry.id} entry={entry} />
+                <ScheduleCard
+                  key={entry.id}
+                  entry={entry}
+                  onEdit={setEditEntry}
+                  onDelete={setDeleteEntry}
+                />
               ))}
             </div>
           )}
