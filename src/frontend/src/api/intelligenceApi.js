@@ -42,4 +42,14 @@ export const intelligenceApi = {
     const { data } = await apiClient.get('/recommendations');
     return Array.isArray(data) ? data : data.items ?? [];
   },
+
+  /**
+   * Accept or reject a recommendation.
+   * action: 'accept' | 'reject'
+   * Backend: POST /recommendations/:id/accept  or  /recommendations/:id/reject
+   */
+  actionRecommendation: async (id, action) => {
+    const { data } = await apiClient.post(`/recommendations/${id}/${action}`);
+    return data;
+  },
 };
