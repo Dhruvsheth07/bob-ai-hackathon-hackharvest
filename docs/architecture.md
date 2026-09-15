@@ -31,32 +31,36 @@ graph TD
 
 | Component | Technology | Responsibility |
 |---|---|---|
-| Frontend | [e.g., React 18] | [e.g., Dashboard UI, user interaction] |
-| Backend API | [e.g., FastAPI] | [e.g., Business logic, orchestration] |
-| AI / ML | [e.g., watsonx.ai] | [e.g., Anomaly scoring, classification] |
-| Database | [e.g., PostgreSQL] | [e.g., Storing pipeline events and scores] |
-| Notifications | [e.g., Slack API] | [e.g., Alerting on threshold breaches] |
+| Frontend | React 18, Vite, TailwindCSS | Dashboard UI, data visualization, and user interaction |
+| Backend API | FastAPI | Business logic, request orchestration, and data validation |
+| AI / Predictor | Rule-Based Engine (Future: ML) | Congestion scoring, risk level classification |
+| Optimizer | Google OR-Tools | Berth allocation and operations scheduling |
+| Database | PostgreSQL & SQLAlchemy | Storing vessels, schedules, ports, and predictions |
 
 ## Data Flow
 
-[Describe how data moves through your system from input to output.]
+Data moves through the system in the following sequence:
 
-1. [e.g., Pipeline logs are ingested via a webhook from GitHub Actions]
-2. [e.g., Logs are preprocessed and chunked into 512-token segments]
-3. [e.g., Each chunk is sent to the watsonx.ai inference endpoint]
-4. [e.g., Anomaly scores are stored in PostgreSQL]
-5. [e.g., The React dashboard polls the API every 30 seconds to refresh]
+1. The Operations Supervisor submits or views vessel schedules via the React dashboard.
+2. The FastAPI backend processes the REST API requests, validating data using Pydantic schemas.
+3. The Congestion Predictor extracts live operational features from PostgreSQL to generate congestion scores and risk levels.
+4. The OR-Tools Optimizer evaluates berth availability and vessel constraints to produce an optimal operations plan.
+5. The Recommendation Engine generates actionable insights (e.g., priority adjustments or rerouting), which are displayed in the dashboard.
 
 ## Security Considerations
 
-[Note any security decisions relevant to the architecture — even if basic.]
+The following security measures have been implemented:
 
-- [e.g., API keys stored in environment variables, never committed to git]
-- [e.g., All API routes require a Bearer token]
-- [e.g., Database credentials rotated via IBM Secrets Manager]
+- **JWT Authentication:** All API routes are protected and require a valid Bearer token.
+- **Environment Variables:** Sensitive information (database URLs, secret keys) is stored in `.env` files and excluded from version control.
+- **Role-Based Access Control:** Distinct roles (ADMIN, PORT_MANAGER, SHIFT_SUPERVISOR) restrict operations like modifying schedules.
+- **Password Hashing:** User passwords are securely hashed using bcrypt prior to database storage.
 
 ## Scalability Notes
 
-[Optional: how would this scale beyond the hackathon prototype?]
+Considerations for scaling beyond the hackathon prototype:
 
-[e.g., "The FastAPI backend is stateless and could be horizontally scaled behind a load balancer. The watsonx.ai calls are the bottleneck and would benefit from request batching."]
+- **Stateless Backend:** The FastAPI application is stateless and can be horizontally scaled behind a load balancer to handle increased traffic.
+- **Asynchronous Processing:** Heavy operations such as OR-Tools optimization and future ML inference could be offloaded to asynchronous background workers (e.g., Celery/Redis).
+- **Database Scaling:** PostgreSQL can comfortably handle current volumes, but read-replicas could be introduced to support read-heavy analytical dashboards.
+- **ML Integration:** The current rule-based prediction engine is designed to be easily swapped with an advanced ML model (like XGBoost or a watsonx.ai endpoint) as data volume grows.

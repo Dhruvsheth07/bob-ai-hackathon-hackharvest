@@ -43,18 +43,17 @@ submission:
     scheduling decisions.
 
   key_features:                        # REQUIRED — List 3 to 5 specific features you implemented
-    - ""                               # e.g., "Real-time pipeline anomaly detection using watsonx.ai"
-    - ""
-    - ""
-    - ""                               # optional 4th
-    - ""                               # optional 5th
+    - "Rule-based prediction engine calculating congestion scores and risk levels"
+    - "Google OR-Tools CP-SAT for automated 72-hour berth and crane allocation"
+    - "Actionable recommendations for rerouting and priority adjustments"
+    - "Dynamic React.js interface providing real-time scheduling overviews"
 
   tech_stack:
     languages: ["Python", "Javascript", "SQL"]                      # REQUIRED — e.g., ["Python", "TypeScript"]
     frameworks: ["FastAPI","React.js","Tailwind CSS","SQLAlchemy"]                     # e.g., ["FastAPI", "React"]
     ibm_technologies: ["IBM Bob","IBM watsonx.ai"]               # e.g., ["watsonx.ai", "IBM Bob", "IBM Cloud Functions"]
     databases: ["PostgreSQL"]                      # e.g., ["PostgreSQL", "Redis"]
-    other: [Google OR-Tools CP-SAT, "sklearn","pandas","numpy"]                          # e.g., ["Docker", "GitHub Actions", "Slack API"]
+    other: ["Google OR-Tools CP-SAT", "sklearn", "pandas", "numpy"]                          # e.g., ["Docker", "GitHub Actions", "Slack API"]
 
   what_we_are_most_proud_of: >         # Optional but recommended — guides judges to your best work
      Our strongest contribution is the integration of predictive analytics

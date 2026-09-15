@@ -1,7 +1,5 @@
 # 🚀 PortFlow AI
 
-> ⚠️ **Replace everything in `[ ]` brackets with your actual content before submission.**
-
 ---
 
 ## 👥 Team
@@ -31,11 +29,10 @@
 
 ## ✨ Key Features
 
-- **Feature 1:** [Brief description — e.g., "Real-time anomaly detection using watsonx.ai"]
-- **Feature 2:** [Brief description]
-- **Feature 3:** [Brief description]
-- **Feature 4:** [Optional]
-- **Feature 5:** [Optional]
+- **Congestion Forecasting:** Rule-based prediction engine that calculates congestion scores and risk levels based on live operational data.
+- **Automated Optimization:** Google OR-Tools CP-SAT generates 72-hour operation plans, producing optimal assignments for berth and crane allocations.
+- **Actionable Recommendations:** Delivers intelligent insights for operational supervisors, advising on rerouting and priority adjustments.
+- **Dynamic Dashboard:** A rich React.js/Vite interface providing a real-time overview of vessel schedules and congestion alerts.
 
 ---
 
@@ -71,30 +68,35 @@
 
 ## ⚡ How to Run
 
-> **Copy these exact steps from your [`docs/setup-guide.md`](docs/setup-guide.md)**
+> **Detailed instructions are available in [`docs/setup-guide.md`](docs/setup-guide.md)**
 
 ```bash
-# 1. Clone the repo
-git clone https://github.com/[your-repo].git
-cd [your-repo]
+# 1. Clone the repository
+git clone https://github.com/Dhruvsheth07/bob-ai-hackathon-hackharvest.git
+cd bob-ai-hackathon-hackharvest
 
-# 2. Install dependencies
+# 2. Install backend dependencies
 cd src
 python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-npm i
 
+# 3. Install frontend dependencies
+cd frontend
+npm install
+cd ..
 
-# 3. Configure environment
+# 4. Set up database and seed user
 cp .env.example .env
-# Edit .env with your values
+alembic upgrade head
+python seed_admin.py
 
-# 4. Run the project
-frontend
-npm run dev
-
-backend
+# 5. Run the application
+# Terminal 1 (Backend - from the src directory):
 uvicorn app.main:app --reload --port 8000 
+
+# Terminal 2 (Frontend - from the src/frontend directory):
+npm run dev
 ```
 
 ---

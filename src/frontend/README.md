@@ -1,16 +1,45 @@
-# React + Vite
+# Port Operations Optimizer - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the frontend dashboard for the Port Operations Optimizer, built with **React 18**, **Vite**, and **TailwindCSS**.
 
-Currently, two official plugins are available:
+## Features
+- **Dashboard Overview:** Monitor high-level port operations, including incoming vessels and pending recommendations.
+- **Vessel Schedules:** Interactive interface to view and manage vessel schedules and priorities.
+- **Operations Planning:** View generated berth and crane allocation plans from the OR-Tools optimizer.
+- **Congestion Predictions:** Visualize AI-driven congestion forecasts and risk levels to proactively manage port traffic.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Getting Started
 
-## React Compiler
+### Prerequisites
+- Node.js (v18 or higher)
+- A running instance of the FastAPI backend
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Installation
 
-## Expanding the ESLint configuration
+1. Navigate to the `frontend` directory:
+   ```bash
+   cd src/frontend
+   ```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+2. Install the required dependencies:
+   ```bash
+   npm install
+   ```
+
+### Running the Application
+
+To start the Vite development server with Hot Module Replacement (HMR):
+
+```bash
+npm run dev
+```
+
+The application will be available at [http://localhost:5173](http://localhost:5173).
+
+## Environment Variables
+
+The frontend connects to the backend API using the `VITE_API_BASE_URL` environment variable. By default, the API client connects to `http://localhost:8000/api/v1`. If you need to change this, create a `.env` file in the `src/frontend` directory:
+
+```env
+VITE_API_BASE_URL=http://your-backend-url/api/v1
+```
