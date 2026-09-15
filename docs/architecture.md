@@ -6,12 +6,25 @@
 
 ```mermaid
 graph TD
-    A[User / Browser] -->|HTTP| B[Frontend - React]
-    B -->|REST API| C[Backend - FastAPI]
-    C -->|SDK| D[watsonx.ai]
-    C -->|Query| E[PostgreSQL]
-    C -->|Publish| F[Slack Webhook]
-    D -->|Inference Result| C
+    A[Port Operations Supervisor] -->|HTTP| B[React.js Frontend]
+    B -->|REST API| C[FastAPI Backend]
+
+    C -->|CRUD / Queries| D[(PostgreSQL)]
+
+    C -->|Operational Data| E[Congestion Predictor]
+    E -->|Congestion Forecast| C
+
+    C -->|Vessel + Berth + Crane Constraints| F[OR-Tools Optimizer]
+    F -->|Optimal Assignments| C
+
+    C -->|Prediction + Optimization| G[Recommendation Engine]
+    G -->|Actionable Recommendations| C
+
+    C -->|Generate Plan| H[72-Hour Planner]
+    H -->|Operations Plan| C
+
+    C -->|API Response| B
+    B -->|Dashboard / Alerts / Plan| A
 ```
 
 ## Components
