@@ -1,7 +1,7 @@
 import React from 'react';
 import { cn } from '../../utils/cn';
 
-function DataTable({ columns, data, className }) {
+function DataTable({ columns, data, className, rowClassName }) {
   return (
     <div className={cn("w-full overflow-auto border border-outline-variant rounded-md", className)}>
       <table className="w-full caption-bottom text-sm">
@@ -28,7 +28,10 @@ function DataTable({ columns, data, className }) {
             data.map((row, i) => (
               <tr
                 key={i}
-                className="border-b border-outline-variant transition-colors hover:bg-surface-container-high data-[state=selected]:bg-surface-container"
+                className={cn(
+                  "border-b border-outline-variant transition-colors hover:bg-surface-container-high data-[state=selected]:bg-surface-container",
+                  rowClassName
+                )}
               >
                 {columns.map((col, j) => (
                   <td key={j} className="p-4 align-middle [&:has([role=checkbox])]:pr-0">

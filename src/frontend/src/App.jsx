@@ -16,6 +16,7 @@ import { OperationsPlan } from './pages/OperationsPlan/OperationsPlan';
 import { Simulation } from './pages/Simulation/Simulation';
 import { Profile } from './pages/Profile/Profile';
 import { Settings } from './pages/Settings/Settings';
+import { Reports } from './pages/Reports/Reports';
 
 function App() {
   return (
@@ -40,6 +41,8 @@ function App() {
             <Route path="operations-plan" element={<OperationsPlan />} />
             <Route path="simulation" element={<Simulation />} />
             
+            <Route path="reports" element={<Reports />} />
+
             <Route path="profile" element={<Profile />} />
             <Route path="settings" element={<Settings />} />
           </Route>
